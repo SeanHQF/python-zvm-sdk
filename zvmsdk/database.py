@@ -613,6 +613,15 @@ class GuestDbOperator(object):
                 "INSERT INTO guests VALUES (?, ?, ?, ?, ?)",
                 (guest_id, userid, meta, net_set, comments))
 
+    def add_guest_onboarding(self, userid, meta, net_set,
+                             comments=None):
+        # Add guest for onboarding which is created before.
+        guest_id = str(uuid.uuid4())
+        with get_guest_conn() as conn:
+            conn.execute(
+                "INSERT INTO guests VALUES (?, ?, ?, ?, ?)",
+                (guest_id, userid, meta, net_set, comments))
+
     def add_guest(self, userid, meta='', comments=''):
         # Generate uuid automatically
         guest_id = str(uuid.uuid4())

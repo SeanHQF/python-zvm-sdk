@@ -250,6 +250,17 @@ register_vm = {
     'additionalProperties': False
 }
 
+register_vm_onboarding = {
+    'type': 'object',
+    'properties': {
+        'meta': {'type': ['string']},
+        'net_set': {'type': ['string']},
+        'port': {'type': ['string']},
+    },
+    'required': ['meta', 'net_set', 'port'],
+    'additionalProperties': False
+}
+
 userid_list_array_query = {
     'type': 'object',
     'properties': {

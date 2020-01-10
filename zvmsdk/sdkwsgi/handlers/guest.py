@@ -282,6 +282,15 @@ class VMAction(object):
                                 userid, meta, net_set)
         return info
 
+    @validation.schema(guest.register_vm_onboarding)
+    def register_vm_onboarding(self, userid, body):
+        meta = body['meta']
+        net_set = body['net_set']
+        port = body['port']
+        info = self.client.send_request('guest_onboarding',
+                                userid, meta, net_set, port)
+        return info
+
     @validation.schema(guest.live_migrate_vm)
     def live_migrate_vm(self, userid, body):
         # dest_zcc_userid default as ''

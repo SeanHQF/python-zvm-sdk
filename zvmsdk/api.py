@@ -471,6 +471,39 @@ class SDKAPI(object):
                                 userid, interface, switch)
             LOG.info("Guest %s registered." % userid)
 
+    def guest_onboarding(self, userid, meta, net_set, port):
+        """DB operation for onboarding an existing VM
+        :param userid: (str) the userid of the vm to be relocated or tested
+        :param meta: (str) the metadata of the vm to be relocated or tested
+        :param net_set: (str) the net_set of the vm, default is 1.
+        :param port: (str) the port of the vm.
+        """
+        userid = userid.upper()
+        # We need the userid logged on so that the guest is active as
+        # inactive guest onboarding isn't supported now.
+        if not zvmutils.check_userid_exist(userid, True):
+            LOG.error("User directory '%s' does not exist." % userid)
+            raise exception.SDKObjectNotExistError(
+                    obj_desc=("Guest '%s'" % userid), modID='guest')
+        else:
+            """add one record for new vm"""
+            action = "add guest '%s' to database" % userid
+            with zvmutils.log_and_reraise_sdkbase_error(action):
+                self._GuestDbOperator.add_guest_onboarding(userid, meta,
+                                                             net_set)
+            action = "add switches of guest '%s' to database" % userid
+            info = self._vmops.get_definition_info(userid)
+            user_direct = info['user_direct']
+            for nic_info in user_direct:
+                if nic_info.startswith('NICDEF'):
+                    nic_list = nic_info.split()
+                    interface = nic_list[1]
+                    switch = nic_list[6]
+                    with zvmutils.log_and_reraise_sdkbase_error(action):
+                            self._NetworkDbOperator.switch_add_record(
+                                userid, interface, port, switch)
+        LOG.info("Guest %s registered for onboarding." % userid)
+
     @check_guest_exist()
     def guest_live_migrate(self, userid, dest_zcc_userid, destination,
                            parms, lgr_action):

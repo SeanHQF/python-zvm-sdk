@@ -538,6 +538,20 @@ class GuestDbOperatorTestCase(base.SDKTestCase):
         self.db_op.delete_guest_by_id('ad8f352e-4c9e-4335-aafa-4f4eb2fcc77c')
 
     @mock.patch.object(uuid, 'uuid4')
+    def test_add_guest_onboarding(self, get_uuid):
+        meta = 'fakemeta=1, fakemeta2=True'
+        net = 1
+        get_uuid.return_value = u'ad8f352e-4c9e-4335-aafa-4f4eb2fcc77c'
+        self.db_op.add_guest_onboarding(self.userid, meta, net)
+        # Query, the guest should in table
+        guests = self.db_op.get_guest_list()
+        self.assertEqual(1, len(guests))
+        self.assertListEqual([(u'ad8f352e-4c9e-4335-aafa-4f4eb2fcc77c',
+                               u'FAKEUSER', u'fakemeta=1, fakemeta2=True', 1,
+                               None)], guests)
+        self.db_op.delete_guest_by_id('ad8f352e-4c9e-4335-aafa-4f4eb2fcc77c')
+
+    @mock.patch.object(uuid, 'uuid4')
     def test_add_guest_twice_error(self, get_uuid):
         meta = 'fakemeta=1, fakemeta2=True'
         get_uuid.return_value = u'ad8f352e-4c9e-4335-aafa-4f4eb2fcc77c'

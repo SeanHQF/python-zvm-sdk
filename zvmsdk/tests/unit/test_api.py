@@ -276,3 +276,32 @@ class SDKAPITestCase(base.SDKTestCase):
                            'assigner_id': 'user1'}
         self.api.volume_detach(connection_info)
         mock_detach.assert_called_once_with(connection_info)
+
+    @mock.patch("zvmsdk.utils.check_userid_exist")
+    @mock.patch("zvmsdk.vmops.VMOps.get_definition_info")
+    @mock.patch("zvmsdk.database.GuestDbOperator.add_guest_onboarding")
+    @mock.patch("zvmsdk.database.NetworkDbOperator.switch_add_record")
+    def test_guest_onboarding(self, networkdb_add, guestdb_onboarding,
+                              get_def_info, chk_usr):
+        networkdb_add.return_value = ''
+        guestdb_onboarding.return_value = ''
+        info = {}
+        info['user_direct'] = ['USER FBA LBYONLY 2048m 64G G',\
+                               'INCLUDE ZCCDFLT', 'COMMAND DEF STOR RESERVED 57344M',\
+                               'CPU 00 BASE', 'CPU 01', 'CPU 02', 'CPU 03', 'IPL 0100',\
+                               'LOGONBY IAASADM', 'MACHINE ESA 32',\
+                               'NICDEF 1000 TYPE QDIO LAN SYSTEM VSC11590 DEVICES 3', '']
+        get_def_info.return_value = info
+        chk_usr.return_value = True
+
+        meta_data = 'rhel7'
+        net_set = '1'
+        port = '5abc7819-abec-4deb-9115-2af5da249155'
+
+        self.api.guest_onboarding(self.userid, meta_data, net_set, port)
+        networkdb_add.assert_called_once_with(self.userid, '1000',
+                                              '5abc7819-abec-4deb-9115-2af5da249155',
+                                              'VSC11590')
+        guestdb_onboarding.assert_called_once_with(self.userid, 'rhel7', '1')
+        get_def_info.assert_called_once_with(self.userid)
+        chk_usr.assert_called_once_with(self.userid, True)

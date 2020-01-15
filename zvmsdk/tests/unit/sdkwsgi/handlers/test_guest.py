@@ -106,6 +106,22 @@ class GuestActionsTest(SDKWSGITest):
 
     @mock.patch.object(util, 'wsgi_path_item')
     @mock.patch('zvmconnector.connector.ZVMConnector.send_request')
+    def test_guest_onboarding(self, mock_action,
+                        mock_userid):
+        self.req.body = '{"action": "register_vm_onboarding",\
+                          "meta": "rhel7",\
+                          "net_set": "1",\
+                          "port": "5abc7819-abec-4deb-9115-2af5da249155"}'
+        mock_action.return_value = ''
+        mock_userid.return_value = FAKE_USERID
+        guest.guest_action(self.req)
+        mock_action.assert_called_once_with('guest_onboarding', FAKE_USERID,
+                                            "rhel7",
+                                            "1",
+                                            "5abc7819-abec-4deb-9115-2af5da249155")
+
+    @mock.patch.object(util, 'wsgi_path_item')
+    @mock.patch('zvmconnector.connector.ZVMConnector.send_request')
     def test_guest_softstop_with_timeout_poll_interval(self, mock_action,
                                                        mock_userid):
         self.req.body = """{"action": "softstop", "timeout": 300,

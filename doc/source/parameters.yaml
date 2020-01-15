@@ -429,6 +429,31 @@ guest_register_net_set:
   in: body
   required: true
   type: string
+action_onboarding_guest:
+  description: |
+    Take ``register_vm_onboarding`` action on guest.
+  in: body
+  required: true
+  type: string
+guest_onboarding_meta:
+  description: |
+    The metadata of the vm to be onboarded.
+  in: body
+  required: true
+  type: string
+guest_onboarding_net_set:
+  description: |
+    Guest network configured or not.
+    ``1`` means configured, ``0`` means not configured. Default as ``1``.
+  in: body
+  required: true
+  type: string
+guest_onboarding_port:
+  description: |
+    Guest network port.
+  in: body
+  required: true
+  type: string
 action_live_resize_cpus_of_guest:
   description: |
     Take ``live_resize_cpus`` action on guest.

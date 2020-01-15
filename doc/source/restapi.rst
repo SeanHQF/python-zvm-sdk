@@ -898,6 +898,33 @@ Register guest to be managed by z/VM Cloud Connector.
 
 * Response contents:
 
+Guest onboarding
+--------------
+
+**POST /guests/{userid}/action**
+
+Onboarding guest to be managed by z/VM Cloud Connector.
+
+* Request:
+
+.. restapi_parameters:: parameters.yaml
+
+  - userid: guest_userid
+  - action: action_onboarding_guest
+  - meta: guest_onboarding_meta
+  - net_set: guest_onboarding_net_set
+  - port: guest_onboarding_port
+
+* Request sample:
+
+.. literalinclude:: ../../zvmsdk/tests/fvt/api_templates/test_guest_onboarding.tpl
+   :language: javascript
+
+* Response code:
+
+  HTTP status code 200 on success.
+
+* Response contents:
 
 Live resize CPUs of guest
 -------------------------

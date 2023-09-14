@@ -379,7 +379,8 @@ def req_guest_create_network_interface(start_index, *args, **kwargs):
 def req_guest_delete_network_interface(start_index, *args, **kwargs):
     url = '/guests/%s/interface'
     body = {'interface': {'os_version': args[start_index],
-                          'vdev': args[start_index + 1]}}
+                          'vdev': args[start_index + 1],
+                          'active': args[start_index + 2]}}
     fill_kwargs_in_body(body['interface'], **kwargs)
     return url, body
 
@@ -885,7 +886,7 @@ DATABASE = {
         'request': req_guest_create_network_interface},
     'guest_delete_network_interface': {
         'method': 'DELETE',
-        'args_required': 3,
+        'args_required': 4,
         'params_path': 1,
         'request': req_guest_delete_network_interface},
     'guest_get_power_state': {
